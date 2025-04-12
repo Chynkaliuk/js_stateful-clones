@@ -8,22 +8,26 @@
  */
 function transformStateWithClones(state, actions) {
   const stateHistory = [];
-  let currentState = { ...state };
+  let currentStateCopy = { ...state }; // Змінили назву
 
   for (const action of actions) {
-    if (action.type === 'clear') {
-      currentState = {};
-    } else if (action.type === 'addProperties') {
-      currentState = { ...currentState, ...action.extraData };
-    } else if (action.type === 'removeProperties') {
-      currentState = { ...currentState };
+    switch (action.type) {
+      case 'clear':
+        currentStateCopy = {};
+        break;
+      case 'addProperties':
+        currentStateCopy = { ...currentStateCopy, ...action.extraData };
+        break;
+      case 'removeProperties':
+        currentStateCopy = { ...currentStateCopy };
 
-      for (const key of action.keysToRemove) {
-        delete currentState[key];
-      }
+        for (const key of action.keysToRemove) {
+          delete currentStateCopy[key];
+        }
+        break;
     }
 
-    stateHistory.push({ ...currentState });
+    stateHistory.push({ ...currentStateCopy }); // Зберігаємо копію
   }
 
   return stateHistory;
